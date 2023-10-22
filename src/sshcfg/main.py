@@ -12,16 +12,19 @@ __license__ = "MIT"
 
 def prepend_file(file_path, text):
     text_old = ""
+    file_bak_path = file_path.with_suffix(".bak")
+    if file_bak_path.exists():
+        raise FileExistsError(f"File {file_bak_path} already exists!")
     try:
         with open(file_path, "r") as f:
             text_old = f.read()
-        shutil.move(file_path, file_path.with_suffix(".bak"))
+        shutil.move(file_path, file_bak_path)
     except FileNotFoundError:
         pass
     with open(file_path, "w+") as f:
         f.write(text + text_old)
     try:
-        os.remove(file_path.with_suffix(".bak"))
+        os.remove(file_bak_path)
     except FileNotFoundError:
         pass
 
